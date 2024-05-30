@@ -1,6 +1,24 @@
 <a name="readme-top"></a>
 
-# TelegramCO2Monitor_be
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/TeleCO2gram/backend">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+<h3 align="center">TelegramCO2Monitor Backend</h3>
+
+  <p align="center">
+    TelegramCO2Monitor is a backend of App monitor telegram Co2 emissions.
+    <br />
+    <a href="https://github.com/TeleCO2gram/backend/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    ·
+    <a href="https://github.com/TeleCO2gram/backend/issues">Issues List</a>
+  </p>
+</div>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
