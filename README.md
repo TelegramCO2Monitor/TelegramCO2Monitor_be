@@ -9,10 +9,10 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">TelegramCO2Monitor</h3>
+<h3 align="center">TelegramCO2Monitor Backend</h3>
 
   <p align="center">
-    TelegramCO2Monitor is a monitor of telegram Co2 emissions
+    TelegramCO2Monitor is a backend of App monitor telegram Co2 emissions.
     <br />
     <a href="https://github.com/TeleCO2gram/backend/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
     ·
