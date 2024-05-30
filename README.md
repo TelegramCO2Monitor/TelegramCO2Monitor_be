@@ -29,11 +29,22 @@
 
 ## Get Started
 
+Cloning repository with this git command and https url
+
+```bash
+git clone https://github.com/TeleCO2gram/backend.git
+```
+or SSH url
+
+```bash
+git clone git@github.com:TeleCO2gram/backend.git
+```
 After cloning the repository, run the following command to install the git hooks:
 
 ```bash
 python setup_hooks.py
 ```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
