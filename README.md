@@ -39,7 +39,7 @@ git clone https://github.com/TeleCO2gram/backend.git
 or SSH url
 
 ```bash
-fit clone git@github.com:TeleCO2gram/backend.git
+git clone git@github.com:TeleCO2gram/backend.git
 ```
 
 After cloning the repository, run the following command to install the git hooks:
