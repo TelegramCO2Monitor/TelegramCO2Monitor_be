@@ -4,4 +4,4 @@ create_venv:
 
 # Install dependencies
 install:
-	pip install --upgrade pip && pip install -r src/requirements.txt
+	pip install --upgrade pip && pip install -r requirements.txt
