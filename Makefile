@@ -5,3 +5,7 @@ create_venv:
 # Install dependencies
 install:
 	pip install --upgrade pip && pip install -r requirements.txt
+
+# Linting
+lint:
+	flake8 src
