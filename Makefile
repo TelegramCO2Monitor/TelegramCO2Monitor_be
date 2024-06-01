@@ -9,3 +9,7 @@ install:
 # Linting
 lint:
 	flake8 src
+
+# Setup hooks
+setup_hooks:
+	python3.12 setup_hooks.py
