@@ -1,6 +1,7 @@
-
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from src.app.api.api import router as api_router
+import os
 
 import logging
 
@@ -12,11 +13,12 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
+load_dotenv()
+
 app = FastAPI(
     title='TeleCO2gram',
     docs_url='/docs'
 )
-
 app.include_router(api_router, prefix="/api")
 
 def conversionLenChar_co2(len_text):
@@ -41,7 +43,8 @@ async def hanle_message_text(update: Update, context: ContextTypes.DEFAULT_TYPE)
 if __name__ == "__main__":
     import uvicorn
 
-    Application = Application.builder().token('7363174408:AAE-eBLsGDNjOw-jityyslHvOUa0FECZnDo').build()
+    Application = Application.builder().token(os.getenv('BOT_TOKEN')).build()
+
     Application.add_handler(CommandHandler('start', start))
     Application.add_handler(MessageHandler(None,hanle_message_text))
     Application.add_handler(MessageHandler(None,hanle_message_text))
