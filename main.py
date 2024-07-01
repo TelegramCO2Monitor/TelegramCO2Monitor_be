@@ -1,10 +1,9 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from src.app.api.api import router as api_router
+from src.app.depends import init_db
 import os
-
 import logging
-
 from telegram import Update
 from telegram.ext import Application ,CommandHandler,ContextTypes,MessageHandler,filters
 
@@ -20,6 +19,12 @@ app = FastAPI(
     docs_url='/docs'
 )
 app.include_router(api_router, prefix="/api")
+
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
+
 
 def conversionLenChar_co2(len_text):
     # Estimate CO2 emissions (1 byte or 1 char of data ≈ 2.1 ng of CO2)
@@ -46,8 +51,8 @@ if __name__ == "__main__":
     Application = Application.builder().token(os.getenv('BOT_TOKEN')).build()
 
     Application.add_handler(CommandHandler('start', start))
-    Application.add_handler(MessageHandler(None,hanle_message_text))
-    Application.add_handler(MessageHandler(None,hanle_message_text))
+    Application.add_handler(MessageHandler(None, hanle_message_text))
+    Application.add_handler(MessageHandler(None, hanle_message_text))
     Application.run_polling()
 
     uvicorn.run(app, port=8000)
