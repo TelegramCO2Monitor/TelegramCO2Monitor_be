@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from src.repositories.PostgreSQL import PostgreSQL, Base
+from src.repositories.TelegramBot import TelegramBot
 
 load_dotenv()
 
@@ -15,6 +16,7 @@ def get_config():
 
 
 config = get_config()
+
 db = PostgreSQL(
     user=config['POSTGRES_USER'],
     password=config['POSTGRES_PASSWORD'],
@@ -36,3 +38,11 @@ def get_db():
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+
+
+init_db()
+
+telegram_bot = TelegramBot(
+    token=config['BOT_TOKEN'],
+    db_instance=db
+)
