@@ -1,21 +1,19 @@
 from datetime import datetime
-
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-from fastapi import Depends
-from sqlalchemy.orm import Session
-from src.app.depends import get_db
 from src.models.Message import Message
-import logging
+from src.models.User import User
+from src.repositories.PostgreSQL import PostgreSQL
 
 
 class TelegramBot:
-    def __init__(self, token: str):
+    def __init__(self, token: str, db_instance: PostgreSQL):
         self.token = token
         self.application = Application.builder().token(self.token).build()
         self.application.add_handler(CommandHandler("start", self.start))
         self.application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_message_text))
         self.application.add_handler(CommandHandler("info", self.info))
+        self.db_instance = db_instance
 
     @staticmethod
     async def start(update: Update) -> None:
@@ -40,11 +38,26 @@ class TelegramBot:
         metadata_emissions = self.co2_text_message_calculator(update.message.to_json())
         total_emissions += metadata_emissions
 
-        logging.info('dovrebbe salvare messaggio')
-        self.save_message_to_db(update.message, total_emissions)
-        logging.info('ha salvato il messaggio')
+        telegram_id = update.message.from_user.id
+        user_name = update.message.from_user.username or update.message.from_user.first_name
 
-        reply_message = (f'Your message emits {total_emissions}ng of CO2\nFull metadata emits {metadata_emissions}ng of CO2')
+        with self.db_instance.LocalSession() as db:
+            try:
+                user = db.query(User).filter_by(telegram_id=telegram_id).first()
+                if not user:
+                    user = self.save_user(db, telegram_id, user_name)
+
+                message_type = self.check_message_type(update)
+
+                self.save_message(db, message_type, total_emissions, update, user)
+
+                user.total_messages_weight += total_emissions
+                db.commit()
+            except Exception:
+                db.rollback()
+
+        reply_message = (f'Your message emits {total_emissions}ng of CO2\nFull metadata emits '
+                         f'{metadata_emissions}ng of CO2')
         await update.message.reply_text(reply_message)
 
     async def initialize(self):
@@ -57,13 +70,41 @@ class TelegramBot:
     async def stop(self):
         await self.application.stop()
 
-    def save_message_to_db(self, message: Message, total_emissions: int, db: Session = Depends(get_db)):
-        logging.info('dentro funione salva')
+    @staticmethod
+    def save_message(db, message_type, total_emissions, update, user):
         new_message = Message(
-            type=message.content_type,
+            type=message_type,
             weight=total_emissions,
-            date=datetime.fromtimestamp(message.date),
-            user_id=1
+            date=datetime.fromtimestamp(update.message.date.timestamp()),
+            user_id=user.id
         )
         db.add(new_message)
+
+    @staticmethod
+    def check_message_type(update):
+        if update.message.text:
+            message_type = 'text'
+        elif update.message.photo:
+            message_type = 'photo'
+        elif update.message.video:
+            message_type = 'video'
+        else:
+            message_type = 'unknown'
+        return message_type
+
+    @staticmethod
+    def save_user(db, telegram_id, user_name):
+        user = User(
+            telegram_id=telegram_id,
+            name=user_name,
+            registration_date=datetime.utcnow(),
+            admin=False,
+            active=True,
+            phone=None,
+            total_messages_weight=0,
+            email=None
+        )
+        db.add(user)
         db.commit()
+        db.refresh(user)
+        return user

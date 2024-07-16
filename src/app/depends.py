@@ -16,6 +16,7 @@ def get_config():
 
 
 config = get_config()
+
 db = PostgreSQL(
     user=config['POSTGRES_USER'],
     password=config['POSTGRES_PASSWORD'],
@@ -39,7 +40,9 @@ def init_db():
     Base.metadata.create_all(bind=engine)
 
 
-def get_telegram_bot():
-    return TelegramBot(
-        token=config['BOT_TOKEN']
-    )
+init_db()
+
+telegram_bot = TelegramBot(
+    token=config['BOT_TOKEN'],
+    db_instance=db
+)
