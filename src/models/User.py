@@ -1,5 +1,6 @@
 from sqlalchemy import BigInteger, Column, Integer, String, DateTime, Boolean
 from ..repositories.PostgreSQL import Base
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
@@ -14,3 +15,5 @@ class User(Base):
     registration_date = Column(DateTime, index=True)
     total_messages_weight = Column(Integer, index=True)
     email = Column(String, index=True)
+    #messages = relationship("Message", back_populates="user")
+
