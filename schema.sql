@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS public.users (
     id serial4 NOT NULL,
     "name" text NOT NULL,
+    telegram_id bigint NOT NULL,
     "admin" bool DEFAULT false NULL,
     active bool DEFAULT true NOT NULL,
     phone int4 NULL,
